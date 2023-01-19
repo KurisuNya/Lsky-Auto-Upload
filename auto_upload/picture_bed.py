@@ -63,10 +63,7 @@ def get_album_id(album_name):
         album_name (_string_): 相册名称
 
     Returns:
-        _int_ or None: 对应的相册id，找不到时返回None 
-        
-    TODO:
-        修改返回参量以改善代码逻辑，避免在获取相册id时无法连接服务器导致相册内的图片全部传入默认位置
+        _dict_: {"get_status":get请求是否成功,"album_id":相册id}
     """
     # 设置GET参数
     get_header = {
@@ -83,8 +80,9 @@ def get_album_id(album_name):
         if response.json()["status"] is True:
             for album in response.json()["data"]["data"]:  
                 if album["name"] == album_name:
-                    return album["id"]
+                    return {"get_status":True,"album_id":album["id"]}
+            return {"get_status":True,"album_id":None}
         else:
-            return None
+            return {"get_status":False,"album_id":None}
     else:
-        return None
+        return {"get_status":False,"album_id":None}

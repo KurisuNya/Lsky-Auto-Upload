@@ -13,7 +13,6 @@ def album_upload(album_config):
         album_config (_dict_): 相册参数
     
     TODO:
-        修改获取相册id的逻辑
         优化对文件重命名的逻辑 
     """
     # 相册参数设置
@@ -22,34 +21,37 @@ def album_upload(album_config):
     album_permission = album_config["permission"]
     album_delete_image = album_config["delete_image"]
     album_time_rename = album_config["time_rename"]
-    # 遍历相册目录
-    for root, dirs, files in os.walk(album_path, topdown=False):  
-        for name in files:
-            file_path = os.path.join(root, name)  
-            # 忽略目录下unsupported_files与uploaded_images文件夹
-            if ("unsupported_files" not in file_path) & ("uploaded_images" not in file_path):  
-                # 检测文件格式是否支持
-                if check_image(name) is True:  
-                    # 设置项检测：时间戳重命名
-                    if album_time_rename is True:  
-                        file_path = time_rename(file_path)
-                    # 图片上传
-                    response = picture_bed.image_upload(file_path, album_permission, album_id)
-                    # 设置项检测：删除上传图片
-                    if response & album_delete_image is True:  
-                        os.remove(file_path)
-                    elif response & album_delete_image is False:  
+    # 判断是否成功get相册id
+    if album_id["get_status"] is True:
+        album_id = album_id["album_id"]
+        # 遍历相册路径
+        for root, dirs, files in os.walk(album_path, topdown=False):  
+            for name in files:
+                file_path = os.path.join(root, name)  
+                # 忽略目录下unsupported_files与uploaded_images文件夹
+                if ("unsupported_files" not in file_path) & ("uploaded_images" not in file_path):  
+                    # 检测文件格式是否支持
+                    if check_image(name) is True:  
+                        # 设置项检测：时间戳重命名
+                        if album_time_rename is True:  
+                            file_path = time_rename(file_path)
+                        # 图片上传
+                        response = picture_bed.image_upload(file_path, album_permission, album_id)
+                        # 设置项检测：删除上传图片
+                        if response & album_delete_image is True:  
+                            os.remove(file_path)
+                        elif response & album_delete_image is False:  
+                            file_path = time_rename(file_path)  
+                            uploaded_path = os.path.join(album_path, "uploaded_images")
+                            if "uploaded_images" not in os.listdir(album_path):
+                                os.mkdir(uploaded_path)
+                            shutil.move(file_path, uploaded_path)
+                    else:  
                         file_path = time_rename(file_path)  
-                        uploaded_path = os.path.join(album_path, "uploaded_images")
-                        if "uploaded_images" not in os.listdir(album_path):
-                            os.mkdir(uploaded_path)
-                        shutil.move(file_path, uploaded_path)
-                else:  
-                    file_path = time_rename(file_path)  
-                    move_path = os.path.join(album_path, "unsupported_files")
-                    if "unsupported_files" not in os.listdir(album_path):
-                        os.mkdir(move_path)
-                    shutil.move(file_path, move_path)
+                        move_path = os.path.join(album_path, "unsupported_files")
+                        if "unsupported_files" not in os.listdir(album_path):
+                            os.mkdir(move_path)
+                        shutil.move(file_path, move_path)
 
 
 def check_image(file_name):
