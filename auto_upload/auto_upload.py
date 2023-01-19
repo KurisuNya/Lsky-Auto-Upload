@@ -11,9 +11,6 @@ def album_upload(album_config):
 
     Args:
         album_config (_dict_): 相册参数
-    
-    TODO:
-        优化对文件重命名的逻辑 
     """
     # 相册参数设置
     album_id = picture_bed.get_album_id(album_config["name"])  
@@ -41,16 +38,18 @@ def album_upload(album_config):
                         if response & album_delete_image is True:  
                             os.remove(file_path)
                         elif response & album_delete_image is False:  
-                            file_path = time_rename(file_path)  
                             uploaded_path = os.path.join(album_path, "uploaded_images")
                             if "uploaded_images" not in os.listdir(album_path):
                                 os.mkdir(uploaded_path)
+                            if os.path.exists(os.path.join(uploaded_path,os.path.basename(file_path))):
+                                file_path = name_add_time(file_path)
                             shutil.move(file_path, uploaded_path)
                     else:  
-                        file_path = time_rename(file_path)  
                         move_path = os.path.join(album_path, "unsupported_files")
                         if "unsupported_files" not in os.listdir(album_path):
                             os.mkdir(move_path)
+                        if os.path.exists(os.path.join(move_path,os.path.basename(file_path))):
+                            file_path = name_add_time(file_path)
                         shutil.move(file_path, move_path)
 
 
@@ -75,7 +74,7 @@ def check_image(file_name):
 
 def get_current_time():  
     """
-    get_current_time 返回格式为"Y-M-D-H-M-S.MS"的时间戳
+    get_current_time 返回格式为"Y-M-D-H-M-S-MS"的时间戳
 
     Returns:
         _str_: 当前时间时间戳 
@@ -103,6 +102,26 @@ def time_rename(file_path):
     file_suffix = file_spilt[1].lower()
     file_root = os.path.dirname(file_path)
     rename_path = os.path.join(file_root, time_stamp+file_suffix)
+    os.rename(file_path, rename_path)
+    return rename_path
+
+
+def name_add_time(file_path):
+    """
+    name_add_time 在文件名称结尾添加时间戳
+
+    Args:
+        file_path (_string_): 文件路径 
+
+    Returns:
+        _string_ : 重命名后的文件路径 
+    """
+    time_stamp = get_current_time()
+    file_spilt = os.path.splitext(os.path.basename(file_path))
+    file_name = file_spilt[0]
+    file_suffix = file_spilt[1].lower()
+    file_root = os.path.dirname(file_path)
+    rename_path = os.path.join(file_root,file_name+"_"+time_stamp+file_suffix)
     os.rename(file_path, rename_path)
     return rename_path
 
