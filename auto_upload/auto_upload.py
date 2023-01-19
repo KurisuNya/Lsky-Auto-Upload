@@ -6,36 +6,62 @@ import time
 
 
 def album_upload(album_config):
-    album_id = picture_bed.get_album_id(album_config["name"])  # 无法找到相册id时上传至默认目录
+    """
+    album_upload 根据输入的album_config内的相册参数进行图片上传
+
+    Args:
+        album_config (_dict_): 相册参数
+    
+    TODO:
+        修改获取相册id的逻辑
+        优化对文件重命名的逻辑 
+    """
+    # 相册参数设置
+    album_id = picture_bed.get_album_id(album_config["name"])  
     album_path = album_config["path"]
-    album_permision = album_config["permision"]
+    album_permission = album_config["permission"]
     album_delete_image = album_config["delete_image"]
     album_time_rename = album_config["time_rename"]
-    for root, dirs, files in os.walk(album_path, topdown=False):  # 遍历整个目录及其子目录的文件
+    # 遍历相册目录
+    for root, dirs, files in os.walk(album_path, topdown=False):  
         for name in files:
-            file_path = os.path.join(root, name)  # 合成文件路径
-            if ("unsupported_files" not in file_path) & ("uploaded_images" not in file_path):  # 忽略unsupported_files与uploaded_images文件夹
-                if check_image(name) is True:  # 检查文件后缀名
-                    if album_time_rename is True:  # 若album_time_rename为true，重命名图片
+            file_path = os.path.join(root, name)  
+            # 忽略目录下unsupported_files与uploaded_images文件夹
+            if ("unsupported_files" not in file_path) & ("uploaded_images" not in file_path):  
+                # 检测文件格式是否支持
+                if check_image(name) is True:  
+                    # 设置项检测：时间戳重命名
+                    if album_time_rename is True:  
                         file_path = time_rename(file_path)
-                    response = picture_bed.image_upload(file_path, album_permision, album_id)
-                    if response & album_delete_image is True:  # 若delete_image为true,删除图片
+                    # 图片上传
+                    response = picture_bed.image_upload(file_path, album_permission, album_id)
+                    # 设置项检测：删除上传图片
+                    if response & album_delete_image is True:  
                         os.remove(file_path)
-                    elif response & album_delete_image is False:  # delete_image为false,移动图片至uploaded_images文件夹
-                        file_path = time_rename(file_path)  # 强制时间戳重命名，避免名称重复
+                    elif response & album_delete_image is False:  
+                        file_path = time_rename(file_path)  
                         uploaded_path = os.path.join(album_path, "uploaded_images")
                         if "uploaded_images" not in os.listdir(album_path):
                             os.mkdir(uploaded_path)
                         shutil.move(file_path, uploaded_path)
-                else:  # 后缀名不满足要求，移动至unsupported_files文件夹
-                    file_path = time_rename(file_path)  # 强制时间戳重命名，避免名称重复
+                else:  
+                    file_path = time_rename(file_path)  
                     move_path = os.path.join(album_path, "unsupported_files")
                     if "unsupported_files" not in os.listdir(album_path):
                         os.mkdir(move_path)
                     shutil.move(file_path, move_path)
 
 
-def check_image(file_name):  # 检查文件后缀名
+def check_image(file_name):
+    """
+    check_image 检查文件格式是否支持
+
+    Args:
+        file_name (_string_): 文件名称
+
+    Returns:
+        _bool_: 文件格式是否支持
+    """
     file_suffix = os.path.splitext(file_name)[1].lower()
     allow_suffix = {".jpeg", ".jpg", ".png", ".gif",
                     ".tif", ".bmp", ".ico", ".psd", ".webp"}
@@ -45,7 +71,13 @@ def check_image(file_name):  # 检查文件后缀名
         return False
 
 
-def get_current_time():  # 时间格式化为时间戳
+def get_current_time():  
+    """
+    get_current_time 返回格式为"Y-M-D-H-M-S.MS"的时间戳
+
+    Returns:
+        _str_: 当前时间时间戳 
+    """
     current_time = time.time()
     local_time = time.localtime(current_time)
     data_head = time.strftime("%Y-%m-%d-%H-%M-%S", local_time)
@@ -54,7 +86,16 @@ def get_current_time():  # 时间格式化为时间戳
     return time_stamp
 
 
-def time_rename(file_path):  # 时间戳重命名
+def time_rename(file_path):  
+    """
+    time_rename 使用时间戳重命名文件
+
+    Args:
+        file_path (_string_): 文件路径 
+
+    Returns:
+        _string_ : 重命名后的文件路径 
+    """
     time_stamp = get_current_time()
     file_spilt = os.path.splitext(file_path)
     file_suffix = file_spilt[1].lower()
@@ -65,7 +106,9 @@ def time_rename(file_path):  # 时间戳重命名
 
 
 if __name__ == "__main__":
-    config = json.load(open("./auto_upload.config"))
+    # 加载相册参数
+    config = json.load(open("auto_upload.config"))
     albums = config["albums"]
+    # 对不同相册进行上传
     for album_config in albums:
         album_upload(album_config)
