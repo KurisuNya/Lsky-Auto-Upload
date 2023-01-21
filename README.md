@@ -16,14 +16,14 @@
 ```json
 {
     "server":"https://127.0.0.1",  // 填入你的服务器url,末尾不能带'/'
-    "disable_ssl":flase,  // 用于局域网内上传,若通讯协议为https,则此字段有效
+    "disable_ssl":false,  // 用于局域网内上传，若通信协议为https，则此字段有效
     "token":"your_token",  // 例如："Bearer 1|xxxxxxxxxxx"
     "albums":
     [
         {
             "name":"",  // 填入相册名称,若为空或找不到对应相册则自动上传至默认路径
             "path":"",  // 填入备份文件夹路径,支持绝对路径与相对路径
-            "permision":"private",  // 图片是否公开,可选择"private"或"public"
+            "permission":"private",  // 图片是否公开,可选择"private"或"public"
             "time_rename":true,  // 仅控制上传前是否按时间戳重命,反映在图床内图片名称
             					 // 文件移动时为避免文件名称重复强制重命名 
             "delete_image":false  // 上传后是否删除本地图片
@@ -31,7 +31,7 @@
         {  // 你可以配置多备份文件夹路径
             "name":"test",
             "path":".\test",
-            "permision":"private",
+            "permission":"private",
             "time_rename":true,
             "delete_image":false
         }
