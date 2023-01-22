@@ -7,10 +7,17 @@ import time
 
 def album_upload(album_config):
     """
-    album_upload 根据输入的album_config内的相册参数进行图片上传
-
+    Usage:
+        根据输入的album_config内的相册参数进行图片上传
+    
     Args:
-        album_config (_dict_): 相册参数
+        album_config (_dict_):{
+            "name": _str_ ,  # 相册名称 
+            "path": _str_ ,  # 相册文件夹路径
+            "permission": _str_ ,  # 图片权限-"public"或"private" 
+            "delete_image": _bool_ ,  # 是否在上传后删除图片
+            "time_rename": _bool_  # 是否使用时间戳重命名文件
+        }
     """
     # 相册参数设置
     album_id = picture_bed.get_album_id(album_config["name"])  
@@ -55,7 +62,8 @@ def album_upload(album_config):
 
 def check_image(file_name):
     """
-    check_image 检查文件格式是否支持
+    Usage:
+        检查文件格式是否支持
 
     Args:
         file_name (_string_): 文件名称
@@ -74,7 +82,8 @@ def check_image(file_name):
 
 def get_current_time():  
     """
-    get_current_time 返回格式为"Y-M-D-H-M-S-MS"的时间戳
+    Usage:
+        返回格式为"Y-M-D-H-M-S-MS"的时间戳
 
     Returns:
         _str_: 当前时间时间戳 
@@ -89,7 +98,8 @@ def get_current_time():
 
 def time_rename(file_path):  
     """
-    time_rename 使用时间戳重命名文件
+    Usage:
+        使用时间戳重命名文件
 
     Args:
         file_path (_string_): 文件路径 
@@ -108,7 +118,8 @@ def time_rename(file_path):
 
 def name_add_time(file_path):
     """
-    name_add_time 在文件名称结尾添加时间戳
+    Usage:
+        在文件名称结尾添加时间戳
 
     Args:
         file_path (_string_): 文件路径 

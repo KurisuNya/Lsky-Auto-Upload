@@ -16,11 +16,12 @@ else:
 
 def image_upload(image_path,permission,album_id):  
     """
-    image_upload 根据传输参数调用api上传图片
+    Usage:
+        根据传输参数调用api上传图片
 
     Args:
         image_path (_string_): 图片路径
-        permission (_string_): 图片权限，public/private 
+        permission (_string_): 图片权限-"public"或"private" 
         album_id (_int_): 相册id
 
     Returns:
@@ -57,13 +58,17 @@ def image_upload(image_path,permission,album_id):
 
 def get_album_id(album_name):  
     """
-    get_album_id 获取相册id
+    Usage:
+        获取相册id
 
     Args:
         album_name (_string_): 相册名称
 
     Returns:
-        _dict_: {"get_status":get请求是否成功,"album_id":相册id}
+        _dict_:{
+            "get_status":_bool_ ,  # 是否成功向服务器发送GET请求
+            "album_id":_int_  # 查询到的相册id
+        }
     """
     # 设置GET参数
     get_header = {
