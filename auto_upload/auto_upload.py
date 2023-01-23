@@ -66,7 +66,7 @@ def check_image(file_name):
         检查文件格式是否支持
 
     Args:
-        file_name (_string_): 文件名称
+        file_name (_str_): 文件名称
 
     Returns:
         _bool_: 文件格式是否支持
@@ -102,10 +102,10 @@ def time_rename(file_path):
         使用时间戳重命名文件
 
     Args:
-        file_path (_string_): 文件路径 
+        file_path (_str_): 文件路径 
 
     Returns:
-        _string_ : 重命名后的文件路径 
+        _str_ : 重命名后的文件路径 
     """
     time_stamp = get_current_time()
     file_spilt = os.path.splitext(file_path)
@@ -122,10 +122,10 @@ def name_add_time(file_path):
         在文件名称结尾添加时间戳
 
     Args:
-        file_path (_string_): 文件路径 
+        file_path (_str_): 文件路径 
 
     Returns:
-        _string_ : 重命名后的文件路径 
+        _str_ : 重命名后的文件路径 
     """
     time_stamp = get_current_time()
     file_spilt = os.path.splitext(os.path.basename(file_path))

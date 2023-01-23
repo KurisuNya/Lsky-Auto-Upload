@@ -20,8 +20,8 @@ def image_upload(image_path,permission,album_id):
         根据传输参数调用api上传图片
 
     Args:
-        image_path (_string_): 图片路径
-        permission (_string_): 图片权限-"public"或"private" 
+        image_path (_str_): 图片路径
+        permission (_str_): 图片权限-"public"或"private" 
         album_id (_int_): 相册id
 
     Returns:
@@ -62,7 +62,7 @@ def get_album_id(album_name):
         获取相册id
 
     Args:
-        album_name (_string_): 相册名称
+        album_name (_str_): 相册名称
 
     Returns:
         _dict_:{
