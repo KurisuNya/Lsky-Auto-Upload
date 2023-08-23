@@ -10,7 +10,7 @@
 
 * 方法一：将`auto_upload.py`与`picture_bed.py`内`auto_upload.config`文件的路径修改为绝对路径。
 * 方法二：在运行脚本前通过`cd`命令将目录移至脚本所在目录。
-* 方法三：使用systemd管理服务，设置WorkingDirectory为脚本所在目录。
+* 方法三：使用`systemd`管理服务，设置`WorkingDirectory`为脚本所在目录。
 
 ## 配置文件格式
 
